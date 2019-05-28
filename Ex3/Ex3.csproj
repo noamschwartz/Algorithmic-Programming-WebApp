@@ -107,6 +107,7 @@
     <Content Include="Views\Info\Index.cshtml" />
     <Content Include="Views\Info\display.cshtml" />
     <Content Include="Views\Info\displayPerTime.cshtml" />
+    <Content Include="Views\Info\displayFromFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
