@@ -20,7 +20,7 @@ namespace Ex3.Controllers
         {
             //write stuff
             //create client
-            //open client server
+            //open client
             //pass lon and lat
             //disconnect
             return View();
