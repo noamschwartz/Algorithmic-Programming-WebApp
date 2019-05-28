@@ -7,5 +7,6 @@ namespace Ex3.Models
 {
     public class Client
     {
+
     }
 }

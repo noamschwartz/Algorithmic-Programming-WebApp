@@ -25,8 +25,19 @@ namespace Ex3.Controllers
             //disconnect
             return View();
         }
-        
-        
+
+        [HttpGet]
+        public ActionResult displayPerTime(string ip, int port, int timesPerSec)
+        {
+            //write stuff
+            //create client
+            //open client
+            //pass lon and lat
+            //disconnect
+            return View();
+        }
+
+
         [HttpGet]
         public ActionResult save()
         {
