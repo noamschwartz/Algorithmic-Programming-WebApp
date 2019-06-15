@@ -1,9 +1,55 @@
-﻿<html>
+﻿
 <style>
-	body {
-		background-image: url("/Content/export-map-share.png");
-		background-size: cover;
-		background-repeat: no-repeat;
-	}
+    body {
+        background-image: url(/WorldMap/export-map-share.png);
+        background-size: 100% 100%;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+
 </style>
-</html>
+<head>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+    <canvas id="myCanvas" style="width:100%; height:100%"></canvas>
+    <script>
+        var originalLon = @ViewBag.lon;
+        var originalLat = @ViewBag.lat;
+        var longi = (@ViewBag.lon + 180) * ($(window).width() / 360);
+        var latti = (@ViewBag.lat + 180) * ($(window).height() / 360);
+        var time = @ViewBag.seconds * 1000
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
+        ctx.arc(longi, latti, 7.5, 0, 2 * Math.PI);
+        ctx.lineStyle = 'blue';
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.stroke();
+        
+     showConstently = (function () {
+
+        $.post("@Url.Action("GetValues")").done(function (xml) {
+            var xmlDoc = $.parseXML(xml),
+                $xml = $(xmlDoc),
+            Lat = $xml.find("Lat").text();
+            Lat = parseFloat(Lat.valueOf());
+            var latti = (Lat + 180) * ($(window).height() / 360);
+            Lon = $xml.find("Lon").text();    
+            Lon = parseFloat(Lon.valueOf());
+            var longi = (Lon + 180) * ($(window).width() / 360);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'red';
+            ctx.lineTo(longi, latti);
+            ctx.stroke();
+            ctx.moveTo(longi, latti);
+        });
+   });
+        setInterval(showConstently, time);
+        showConstently();
+       
+
+    </script>
+</body>

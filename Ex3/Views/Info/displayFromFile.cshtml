@@ -2,6 +2,67 @@
 @{
     ViewBag.Title = "displayFromFile";
 }
+<html>
+<body>
+    <style>
 
-<h2>displayFromFile</h2>
+        body {
+            background-image: url("../../WorldMap/export-map-share.png");
+            background-size: 100% 100%;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+    </style>
+    <canvas id="myCanvas" style="width:100%; height:100%"></canvas>
+    <script>
+        var iterations = @ViewBag.numOfLines-1;    
+        var originalLon = @ViewBag.lon;
+        var originalLat = @ViewBag.lat;
+        var longi = (@ViewBag.lon + 180) * ($(window).width() / 360);
+        var latti = (@ViewBag.lat + 180) * ($(window).height() / 360);
+        var time = @ViewBag.times * 1000
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
 
+        ctx.arc(longi, latti, 7.5, 0, 2 * Math.PI);
+        ctx.lineStyle = 'blue';
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.stroke();
+
+
+        showConstently = (function () {
+
+        $.post("@Url.Action("ValuesFromFile")").done(function (xml) {
+            var xmlDoc = $.parseXML(xml),
+                $xml = $(xmlDoc),
+            Lat = $xml.find("Lat").text();
+            Lat = parseFloat(Lat.valueOf());
+            var latt = (Lat + 180) * ($(window).height() / 360);
+            Lon = $xml.find("Lon").text();
+            Lon = parseFloat(Lon.valueOf());
+            var long = (Lon + 180) * ($(window).width() / 360);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'red';
+    
+
+            ctx.lineTo(long, latt);
+            ctx.stroke();
+            ctx.moveTo(long, latt);
+            iterations = iterations - 1;
+            
+            if (iterations == 0) {
+                setTimeout(function () { alert("Done!") }, time)
+                clearInterval(stop)
+            }
+        });
+   });
+        var stop = setInterval(showConstently, time);
+    </script>
+
+   
+</body>
+</html>

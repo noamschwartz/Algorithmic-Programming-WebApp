@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "save";
+}
+
+<style>
+    body {
+        background-image: url(/WorldMap/export-map-share.png);
+        background-size: 100% 100%;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+</style>
+<head>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+    <canvas id="myCanvas" style="width:100%; height:100%"></canvas>
+    <script>
+
+        var firstIter = true;
+        var originalLon = @ViewBag.lon;
+        var originalLat = @ViewBag.lat;
+        var longi = (@ViewBag.lon + 180) * ($(window).width() / 360);
+        var latti = (@ViewBag.lat + 180) * ($(window).height() / 360);
+        var IntervalTime = @ViewBag.seconds * 1000;
+        var TimeLimit = @ViewBag.times * 1000;
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight;
+        var totalTimess = @ViewBag.seconds * @ViewBag.times;
+        ctx.beginPath();
+
+        var totalTimes = parseFloat(TimeLimit) / parseFloat(IntervalTime);
+        var totalTimes = Math.ceil(totalTimes);
+
+        myTimer = (function () {            
+            $.post("@Url.Action("SaveValues")").done(function (xml) {
+                if (firstIter) {
+                    ctx.arc(longi, latti, 7.5, 0, 2 * Math.PI);
+                    ctx.lineStyle = 'blue';
+                    ctx.fillStyle = 'red';
+                    ctx.fill();
+                    ctx.stroke();
+                    totalTimes = totalTimes - 1;
+                    firstIter = false;
+                }
+                if (totalTimes == 0) {
+                    
+                    clearInterval(toStop);
+                }
+                else {
+                    totalTimes = totalTimes - 1;
+                }
+                var xmlDoc = $.parseXML(xml),
+                    $xml = $(xmlDoc),
+
+                Lon = $xml.find("Lon").text();
+                Lon = parseFloat(Lon.valueOf());
+                var updatedLon = (Lon + 180) * ($(window).width() / 360);
+                Lat = $xml.find("Lat").text();
+                Lat = parseFloat(Lat.valueOf());
+                var updatedLat = (Lat + 180) * ($(window).height() / 360);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'red';
+                ctx.lineTo(updatedLon, updatedLat);
+                ctx.stroke();
+                ctx.moveTo(updatedLon, updatedLat);
+           
+        });
+    });
+        var toStop = setInterval(myTimer, IntervalTime);
+
+
+
+</script>
+</body>
+
+
